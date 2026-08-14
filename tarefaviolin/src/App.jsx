@@ -1,30 +1,35 @@
-import { useEffect, useState } from 'react'
-import './App.css'
+import { useEffect, useState } from "react";
 
 function App() {
-  const[usuarios, setUsuarios] = useState([])
+  const [comentarios, setComentarios] = useState([]);
 
   useEffect(() => {
-    async function  buscarUsuarios() {
-      const resposta = await fetch('https://jsonplaceholder.typicode.com/users')
-      const dados = await resposta.json()
-      setUsuarios(dados)
-    
+    async function buscarComentarios() {
+      const resposta = await fetch(
+        "https://jsonplaceholder.typicode.com/comments?postId=1"
+      );
+
+      const dados = await resposta.json();
+
+      setComentarios(dados);
     }
-    buscarUsuarios()
-  }, [])
-  
+
+    buscarComentarios();
+  }, []);
+
   return (
-    <>
-      <section id="center">
-       <h1>Lista de usuarios</h1>
-       <ul>usuarios.map(usuario) =(
-        <li key={usuarios.id}>
-          </li>)</ul>
-      </section>
-    </>
-  )
+    <div>
+      <h1>Comentários do Post 1</h1>
+
+      <ul>
+        {comentarios.map((comentario) => (
+          <li key={comentario.id}>
+            <strong>{comentario.name}</strong> - {comentario.email}
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
 }
-export default App
 
-
+export default App;
