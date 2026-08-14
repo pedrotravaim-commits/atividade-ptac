@@ -1,33 +1,31 @@
 import { useEffect, useState } from "react";
 
 function App() {
-  const [usuarios, setUsuarios] = useState([]);
+const [usuario, setUsuario] = useState(null);
 
-  useEffect(() => {
-    async function buscarUsuarios() {
-      const resposta = await fetch("https://reqres.in/api/users?page=2");
+useEffect(() => {
+async function buscarUsuario() {
+const resposta = await fetch("https://reqres.in/api/users/5");
 
-      const dados = await resposta.json();
+const dados = await resposta.json();
+setUsuario(dados.data);
+}
+buscarUsuario();
+}, []);
 
-      setUsuarios(dados.data);
-    }
+if (usuario === null) {
+return <h1>Carregando</h1>;
+}
 
-    buscarUsuarios();
-  }, []);
+return (
+<div>
+<h1>
+{usuario.primeiro_nome} {usuario.ultimo_nome}
+</h1>
 
-  return (
-    <div>
-      <h1>Usuários</h1>
-
-      <ul>
-        {usuarios.map((usuario) => (
-          <li key={usuario.id}>
-            {usuario.primeiro_nome} {usuario.ultimo_nome} - {usuario.email}
-          </li>
-        ))}
-      </ul>
-    </div>
-  );
+<p>{usuario.email}</p>
+</div>
+);
 }
 
 export default App;
