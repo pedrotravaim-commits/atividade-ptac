@@ -1,30 +1,28 @@
 import { useEffect, useState } from "react";
 
 function App() {
-  const [comentarios, setComentarios] = useState([]);
+  const [usuarios, setUsuarios] = useState([]);
 
   useEffect(() => {
-    async function buscarComentarios() {
-      const resposta = await fetch(
-        "https://jsonplaceholder.typicode.com/comments?postId=1"
-      );
+    async function buscarUsuarios() {
+      const resposta = await fetch("https://reqres.in/api/users?page=2");
 
       const dados = await resposta.json();
 
-      setComentarios(dados);
+      setUsuarios(dados.data);
     }
 
-    buscarComentarios();
+    buscarUsuarios();
   }, []);
 
   return (
     <div>
-      <h1>Comentários do Post 1</h1>
+      <h1>Usuários</h1>
 
       <ul>
-        {comentarios.map((comentario) => (
-          <li key={comentario.id}>
-            <strong>{comentario.name}</strong> - {comentario.email}
+        {usuarios.map((usuario) => (
+          <li key={usuario.id}>
+            {usuario.primeiro_nome} {usuario.ultimo_nome} - {usuario.email}
           </li>
         ))}
       </ul>
