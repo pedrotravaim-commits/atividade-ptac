@@ -1,31 +1,35 @@
 import { useEffect, useState } from "react";
 
-function App() {
-const [usuario, setUsuario] = useState(null);
-
-useEffect(() => {
-async function buscarUsuario() {
-const resposta = await fetch("https://reqres.in/api/users/5");
-
-const dados = await resposta.json();
-setUsuario(dados.data);
-}
-buscarUsuario();
-}, []);
-
-if (usuario === null) {
-return <h1>Carregando</h1>;
-}
-
+function ListaUsuarios({ usuarios }) {
 return (
-<div>
-<h1>
-{usuario.primeiro_nome} {usuario.ultimo_nome}
-</h1>
-
-<p>{usuario.email}</p>
-</div>
+<ul>
+{usuarios.map((usuario) => (
+<li key={usuario.id}>
+{usuario.name}
+</li>
+))}
+</ul>
 );
 }
 
+function App() {
+const [usuarios, setUsuarios] = useState([]);
+
+useEffect(() => {
+async function buscarUsuarios() {
+const resposta = await fetch(
+"https://jsonplaceholder.typicode.com/users"
+);
+
+const dados = await resposta.json();
+
+setUsuarios(dados);}
+buscarUsuarios();}, []);
+
+return (
+<div>
+<h1>usuarios lista</h1>
+<ListaUsuarios usuarios={usuarios} />
+</div>
+);}
 export default App;
