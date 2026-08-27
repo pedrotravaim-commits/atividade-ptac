@@ -12,31 +12,40 @@ function ListaUsuarios({ usuarios }) {
 
 function App() {
   const [usuarios, setUsuarios] = useState([]);
-  const [carregando, setCarregando] = useState(true); // <-- novo estado
+  const [carregando, setCarregando] = useState(true);
+  const [erro, setErro] = useState(null); // <-- novo estado
 
   useEffect(() => {
     async function buscarUsuarios() {
-      const resposta = await fetch(
-        "https://jsonplaceholder.typicode.com/users"
-      );
+      try {
+        const resposta = await fetch(
+          "https://jsonplaceholder.typicode.com/users"
+        );
 
-      const dados = await resposta.json();
+        // REGRA DE OURO 1: fetch não rejeita sozinho em 4xx/5xx
+        if (!resposta.ok) {
+          throw new Error(`Erro HTTP: ${resposta.status} - ${resposta.statusText}`);
+        }
 
-      setUsuarios(dados);
-      setCarregando(false); // <-- desliga o loading só quando os dados chegam
+        const dados = await resposta.json();
+        setUsuarios(dados);
+      } catch (e) {
+        setErro(e.message);
+      } finally {
+        // REGRA DE OURO 2: finally roda em sucesso OU falha
+        setCarregando(false);
+      }
     }
     buscarUsuarios();
   }, []);
 
+  if (carregando) return <p>Carregando...</p>;
+  if (erro) return <p>Erro: {erro}</p>;
+
   return (
     <div>
       <h1>usuarios lista</h1>
-
-      {carregando ? (
-        <p>Carregando...</p>
-      ) : (
-        <ListaUsuarios usuarios={usuarios} />
-      )}
+      <ListaUsuarios usuarios={usuarios} />
     </div>
   );
 }
