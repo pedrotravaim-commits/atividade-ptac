@@ -20,7 +20,7 @@ function App() {
 
     async function buscarUsuarios() {
       try {
-        const resposta = await fetch("https://jsonplaceholder.typicode.com/users",
+        const resposta = await fetch("https://jsonplaceholder.typicode.com/usuariosenterrado",
           { signal: controle.signal } 
         );
         if (!resposta.ok) {
