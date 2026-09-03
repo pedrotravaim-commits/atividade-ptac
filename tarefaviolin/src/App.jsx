@@ -16,13 +16,13 @@ function App() {
   const [erro, setErro] = useState(null);
 
   useEffect(() => {
-    const controle = new AbortController(); // controlador desta requisição
+    const controle = new AbortController();
 
     async function buscarUsuarios() {
       try {
         const resposta = await fetch(
           "https://jsonplaceholder.typicode.com/users",
-          { signal: controle.signal } // amarra o fetch ao AbortController
+          { signal: controle.signal }
         );
 
         if (!resposta.ok) {
@@ -32,7 +32,6 @@ function App() {
         const dados = await resposta.json();
         setUsuarios(dados);
       } catch (e) {
-        // REGRA DE OURO 3: ignora o erro "esperado" do cancelamento
         if (e.name !== "AbortError") {
           setErro(e.message);
         }
@@ -41,18 +40,22 @@ function App() {
       }
     }
     buscarUsuarios();
-
-    // Cleanup: roda ao desmontar (ou antes do efeito rodar de novo)
     return () => controle.abort();
   }, []);
 
+  // ORDEM IMPORTA: loading e erro são checados ANTES de olhar pra lista
   if (carregando) return <p>Carregando...</p>;
   if (erro) return <p>Erro: {erro}</p>;
 
   return (
     <div>
       <h1>usuarios lista</h1>
-      <ListaUsuarios usuarios={usuarios} />
+
+      {usuarios.length === 0 ? (
+        <p>Nenhum usuário encontrado.</p>
+      ) : (
+        <ListaUsuarios usuarios={usuarios} />
+      )}
     </div>
   );
 }
